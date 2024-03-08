@@ -5,7 +5,7 @@
         @click.stop="drawer = !drawer"
       ></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Teste</v-toolbar-title>
+      <v-toolbar-title>Biblioteca</v-toolbar-title>
 
       <v-spacer></v-spacer>
     </v-app-bar>
