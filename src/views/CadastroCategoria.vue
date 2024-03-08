@@ -99,16 +99,6 @@ async function salvar() {
   }
 }
 
-function filtroCategoria() {
-  let valores = []; 
-
-  valores = categoria.value.filter((item) => {
-    return item.name.toLowerCase().indexOf(pesquisar.value.toLowerCase()) > -1;
-  });
-
-  return valores; 
-}
-
 onMounted(async () => {
   try {
     const response = await api.get("categoria");
