@@ -19,7 +19,11 @@
           </template>
 
           <v-list-item>
-            <v-btn flat @click="cadastroItem">Item</v-btn>
+            <v-btn flat @click="cadastroLivro">Livro</v-btn>
+          </v-list-item>
+
+          <v-list-item>
+            <v-btn flat @click="cadastroCategoria">Categoria</v-btn>
           </v-list-item>
         </v-list-group>
       </v-list>
@@ -38,7 +42,11 @@ const drawer = ref(false);
 const router = useRouter();
 
 //funções
-function cadastroItem() {
-  router.push({ name: "Item" });
+function cadastroLivro() {
+  router.push({ name: "Livro" });
+}
+
+function cadastroCategoria() {
+  router.push({ name: "Categoria" });
 }
 </script>

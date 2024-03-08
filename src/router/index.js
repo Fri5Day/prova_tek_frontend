@@ -12,6 +12,16 @@ const routes = [
         component: () => import('@/views/Home.vue'),
       },
       {
+        path: 'cadastro-livro',
+        name: 'Livro',
+        component: () => import('@/views/CadastroLivro.vue'),
+      },
+      {
+        path: 'cadastro-categoria',
+        name: 'Categoria',
+        component: () => import('@/views/CadastroCategoria.vue'),
+      },
+      {
         path: "/:pathMatch(.*)*",
         redirect: { name: "Home" }
       }
