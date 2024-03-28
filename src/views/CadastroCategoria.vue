@@ -43,7 +43,7 @@ import ModalCategoria from "@/components/ModalCategoria.vue";
 import ModalConfirmacao from "@/components/ModalConfirmacao.vue";
 
 //serviços
-import { api } from "@/services/api.js";
+import { api } from '../Services/api.js'; 
 
 //variaveis reativas
 const dialogAtualizar = ref(false);

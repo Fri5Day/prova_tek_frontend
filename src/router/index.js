@@ -22,6 +22,11 @@ const routes = [
         component: () => import('@/views/CadastroCategoria.vue'),
       },
       {
+        path: 'aluguel-livro',
+        name: 'AluguelLivro',
+        component: () => import('@/views/AluguelLivro.vue'),
+      },
+      {
         path: "/:pathMatch(.*)*",
         redirect: { name: "Home" }
       }

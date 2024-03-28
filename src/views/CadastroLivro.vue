@@ -6,6 +6,7 @@
           <v-card-title>{{ livro.titulo }}</v-card-title>
           <v-card-text>Autor: {{ livro.autor }}</v-card-text>
           <v-card-text>Descricao: {{ livro.descricao }}</v-card-text>
+          <v-card-text>Categoria: {{ livro.categoria.nome }}</v-card-text>
           <v-card-text>Ano Publicação: {{ livro.anoPublicacao }}</v-card-text>
           <v-card-text>Cópias: {{ livro.copias }}</v-card-text>
           <v-card-text>Cópias Disponiveis: {{ livro.copiasDisponiveis }}</v-card-text>
@@ -18,12 +19,6 @@
               <v-icon color="error">mdi-delete</v-icon>
             </v-btn>  
 
-            <v-btn class="mr-5" icon @click="alugarLivro(livro)">
-              <v-icon>mdi-book-arrow-down</v-icon>
-            </v-btn>
-            <v-btn icon @click="devolverLivro(livro)">
-              <v-icon>mdi-book-arrow-up</v-icon>
-            </v-btn>
           </v-list-item-action>
           <v-divider />
         </v-list-item>
@@ -69,7 +64,7 @@ import ModalLivro from "@/components/ModalLivro.vue";
 import ModalConfirmacao from "@/components/ModalConfirmacao.vue";
 
 //serviços
-import { api } from "@/services/api.js";
+import { api } from '../Services/api.js'; 
 
 //variaveis reativas
 const dialogAtualizar = ref(false);
@@ -131,36 +126,6 @@ async function carregarListaCategoria() {
   }
 }
 
-async function alugarLivro(livro) {
-  if (livro.copiasDisponiveis > 0) {
-    livro.copiasDisponiveis--; 
-    try {
-      await api.put(`livro/${livro.id}`, { copiasDisponiveis: livro.copiasDisponiveis });
-      console.log("Livro alugado com sucesso!");
-    } catch (error) {
-      console.error("Erro ao atualizar o livro:", error);
-    }
-  } else {
-    console.log("Não há cópias disponíveis para alugar.");
-  }
-}
-
-async function devolverLivro(livro) {
-  if (livro.copiasDisponiveis > 0 ) {
-    livro.copiasDisponiveis++; 
-    try {
-      await api.put(`livro/${livro.id}`, { copiasDisponiveis: livro.copiasDisponiveis });
-      console.log("Livro devolvido com sucesso!");
-    } catch (error) {
-      console.error("Erro ao atualizar o livro:", error);
-    }
-  } else {
-    console.log("Não há cópias disponíveis para alugar ou o limite foi atingido.");
-  }
-}
-
-
-
 async function salvar() {
   try {
     let resposta;
@@ -183,6 +148,7 @@ onMounted(async () => {
   try {
     const response = await api.get("livro");
     livro.value = response.data;
+    console.log(livro.value)
   } catch (error) {
     alert("Falha ao conectar com o servidor!");
     console.error("Erro ao carregar a lista de livro:", error);

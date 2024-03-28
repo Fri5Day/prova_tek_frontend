@@ -26,6 +26,17 @@
             <v-btn flat @click="cadastroCategoria">Categoria</v-btn>
           </v-list-item>
         </v-list-group>
+
+        <v-list-group value="Livros">
+          <template #activator="{ props }">
+            <v-list-item v-bind="props" title="Livros"></v-list-item>
+          </template>
+
+          <v-list-item>
+            <v-btn flat @click="aluguelLivro">Alugar/Devolver</v-btn>
+          </v-list-item>
+
+        </v-list-group>
       </v-list>
     </v-navigation-drawer>
 </template>
@@ -48,5 +59,9 @@ function cadastroLivro() {
 
 function cadastroCategoria() {
   router.push({ name: "Categoria" });
+}
+
+function aluguelLivro() {
+  router.push({ name: "AluguelLivro" });
 }
 </script>
