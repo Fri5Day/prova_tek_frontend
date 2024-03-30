@@ -1,59 +1,89 @@
 <template>
-    <div class="mt-10" style="display: grid; justify-items: center">
-      <v-list max-width="500" width="100%">
-        <v-card>
-          <v-list-item v-for="livro in livro" :key="livro.id">
+  <div class="mt-10" style="display: grid; justify-items: center">
+    <v-list max-width="500" width="100%">
+      <v-card>
+        <v-list-item v-for="livro in livro" :key="livro.id">
           <v-card-title>{{ livro.titulo }}</v-card-title>
           <v-card-text>Autor: {{ livro.autor }}</v-card-text>
           <v-card-text>Descricao: {{ livro.descricao }}</v-card-text>
           <v-card-text>Categoria: {{ livro.categoria.nome }}</v-card-text>
           <v-card-text>Ano Publicação: {{ livro.anoPublicacao }}</v-card-text>
           <v-card-text>Cópias: {{ livro.copias }}</v-card-text>
-          <v-card-text>Cópias Disponiveis: {{ livro.copiasDisponiveis }}</v-card-text>
+          <v-card-text
+            >Cópias Disponiveis: {{ livro.copiasDisponiveis }}</v-card-text
+          >
           <v-list-item-action class="d-flex flex-row pr-4">
             <v-btn class="mr-5" icon @click="atualizarLivro(livro)">
               <v-icon color="primary">mdi-pencil</v-icon>
             </v-btn>
-  
+
             <v-btn class="mr-5" icon @click="deletarLivro(livro)">
               <v-icon color="error">mdi-delete</v-icon>
-            </v-btn>  
-
+            </v-btn>
           </v-list-item-action>
           <v-divider />
         </v-list-item>
-        </v-card>
-      </v-list>
-  
-      <v-btn fab @click="adicionarLivro()" color="orange" dark bottom class="ma-4 fixed-btn">
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-  
-      <!--Componentes-->
-      <ModalLivro :dialogLivro="dialogAtualizar" @change="dialogAtualizar = $event" @salvar="salvar()">
-        <v-text-field label="Titulo" v-model="livroSelecionado.titulo" />
-        <v-text-field label="Autor" v-model="livroSelecionado.autor" />
-        <v-select     
+      </v-card>
+    </v-list>
+
+    <v-btn
+      fab
+      @click="adicionarLivro()"
+      color="orange"
+      dark
+      bottom
+      class="ma-4 fixed-btn"
+    >
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
+
+    <div v-if="livro.length === 0">
+      <v-card>
+        <v-card-text>Não há livros cadastrados!</v-card-text>
+      </v-card>
+    </div>
+    <!--Componentes-->
+    <ModalLivro
+      :dialogLivro="dialogAtualizar"
+      @change="dialogAtualizar = $event"
+      @salvar="salvar()"
+    >
+      <v-text-field label="Titulo" v-model="livroSelecionado.titulo" />
+      <v-text-field label="Autor" v-model="livroSelecionado.autor" />
+      <v-select
         label="Categoria"
         v-model="livroSelecionado.categoriaId"
         :items="listarCategoria"
         item-title="nome"
         item-value="id"
-        @click="carregarListaCategoria" />
-        <v-text-field label="Descrição" v-model="livroSelecionado.descricao" />
-        <v-text-field type="number" label="Ano Publicação" v-model="livroSelecionado.anoPublicacao" />
-        <v-text-field type="number" label="Cópias" v-model="livroSelecionado.copias" />
-        <v-text-field type="number" label="Cópias Disponiveis" v-model="livroSelecionado.copiasDisponiveis" />
-      </ModalLivro>
-  
-      <ModalConfirmacao
-        :dialogConfirmacao="dialogDeletar"
-        @change="dialogDeletar = $event"
-        @sim="confirmaDeletarlivro()"
-        :texto="`Tem certeza que deseja excluir a livro ${livroSelecionado.titulo}?`"
+        @click="carregarListaCategoria"
       />
-    </div>
-  </template>
+      <v-text-field label="Descrição" v-model="livroSelecionado.descricao" />
+      <v-text-field
+        type="number"
+        label="Ano Publicação"
+        v-model="livroSelecionado.anoPublicacao"
+      />
+      <v-text-field
+        type="number"
+        label="Cópias"
+        v-model="livroSelecionado.copias"
+      />
+      <v-text-field
+        type="number"
+        label="Cópias Disponiveis"
+        v-model="livroSelecionado.copiasDisponiveis"
+      />
+    </ModalLivro>
+
+    <ModalConfirmacao
+      :dialogConfirmacao="dialogDeletar"
+      @change="dialogDeletar = $event"
+      @sim="confirmaDeletarlivro()"
+      :texto="`Tem certeza que deseja excluir a livro ${livroSelecionado.titulo}?`"
+    />
+  </div>
+</template>
 
 <script setup>
 //vue
@@ -64,7 +94,7 @@ import ModalLivro from "@/components/ModalLivro.vue";
 import ModalConfirmacao from "@/components/ModalConfirmacao.vue";
 
 //serviços
-import { api } from '../Services/api.js'; 
+import { api } from "../Services/api.js";
 
 //variaveis reativas
 const dialogAtualizar = ref(false);
@@ -74,7 +104,7 @@ const listarCategoria = ref([]);
 const livroSelecionado = ref({
   titulo: "",
   autor: "",
-  categoriaId:"",
+  categoriaId: "",
   descricao: "",
   anoPublicacao: "",
   copias: "",
@@ -95,9 +125,7 @@ async function deletarLivro(livro) {
 async function confirmaDeletarlivro() {
   try {
     await api.delete(`livro/${livroSelecionado.value.id}`);
-    livro.value = livro.value.filter(
-      (c) => c.id !== livroSelecionado.value.id
-    );
+    livro.value = livro.value.filter((c) => c.id !== livroSelecionado.value.id);
     dialogDeletar.value = false;
   } catch (error) {
     console.error(error);
@@ -148,7 +176,7 @@ onMounted(async () => {
   try {
     const response = await api.get("livro");
     livro.value = response.data;
-    console.log(livro.value)
+    console.log(livro.value);
   } catch (error) {
     alert("Falha ao conectar com o servidor!");
     console.error("Erro ao carregar a lista de livro:", error);

@@ -20,6 +20,12 @@
       <v-icon>mdi-plus</v-icon>
     </v-btn>
 
+    <div v-if="categoria.length === 0">
+      <v-card>
+        <v-card-text>Não há categorias cadastradas!</v-card-text>
+      </v-card>
+    </div>
+
     <!--Componentes-->
     <ModalCategoria :dialogCategoria="dialogAtualizar" @change="dialogAtualizar = $event" @salvar="salvar()">
       <v-text-field label="Nome" v-model="categoriaSelecionada.nome" />

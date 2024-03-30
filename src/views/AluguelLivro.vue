@@ -23,17 +23,28 @@
             </v-card-actions>
         </form>
     </v-card>
+    <!--Componentes-->
+    <ModalSucesso
+      :dialogSucesso="dialogEvent"
+      @change="dialogEvent = $event"
+      :texto="menssagem"
+    />
 </template>
 <script setup>
 //vue
 import { onMounted, ref } from 'vue'
 import { useField, useForm } from 'vee-validate'
 
+//Componentes
+import ModalSucesso from '../components/ModalSucesso.vue'
+
 //Serviços
 import { api } from '../Services/api.js'
 
 //Variaveis reativas
 const listarLivro = ref([]);
+const dialogEvent = ref(false);
+const menssagem = ref("")
 
 //Regras de formulario
 const { handleSubmit, handleReset } = useForm({
@@ -65,9 +76,7 @@ const items = ref([
 ])
 
 const submit = handleSubmit(values => {
-    alert(JSON.stringify(values, null, 2))
     return manipularLivro(values);
-
 })
 
 //Funções
@@ -76,8 +85,8 @@ async function buscarLivros() {
         const response = await api.get("livro");
         if (response.data && Array.isArray(response.data)) {
             listarLivro.value = response.data.map((livro) => ({
-                nome: livro.titulo,
                 id: livro.id,
+                nome: `${livro.titulo} (${livro.copiasDisponiveis} disponíveis)`, 
             }));
         } else {
             console.error("Resposta inválida da API para 'livros'.", response);
@@ -91,7 +100,9 @@ async function buscarLivros() {
 async function alugarLivro(livro) {
     try {
         await api.put(`livro/${livro.selectLivro}/alugar`, { quantidade: livro.quantidade });
-        console.log("Livro alugado com sucesso!");
+        menssagem.value = `O livro foi alugado com sucesso!`, 
+        dialogEvent.value = true
+        handleReset(); 
     } catch (error) {
         console.error("Erro ao atualizar o livro:", error);
     }
@@ -100,7 +111,9 @@ async function alugarLivro(livro) {
 async function devolverLivro(livro) {
     try {
         await api.put(`livro/${livro.selectLivro}/devolver`, { quantidade: livro.quantidade });
-        console.log("Livro devolvido com sucesso!");
+        menssagem.value = `O livro foi devolvido com sucesso!`, 
+        dialogEvent.value = true
+        handleReset(); 
     } catch (error) {
         console.error("Erro ao atualizar o livro:", error);
     }
