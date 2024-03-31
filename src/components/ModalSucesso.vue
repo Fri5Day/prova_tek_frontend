@@ -1,15 +1,15 @@
 <template>
-  <v-dialog v-model="dialog" @click:outside="fecharModal" width="350">
-    <v-card class="pa-4" rounded="xl">
-      <v-card-title>Sucesso</v-card-title>
-      <v-card-text>
-        <p>{{ texto }}</p>
-      </v-card-text>
-      <v-card-actions class="d-flex justify-end">
-        <v-btn text color="success" @click="fecharModal">Ok</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <v-alert
+    v-model="dialog"
+    class="custom-alert fade-out mt-10"
+    width="350"
+    rounded="xl"
+    title="Sucesso"
+    type="success"
+  ><p>{{ texto }}</p>
+  <v-btn variant="outlined" @click="fecharModal">Ok</v-btn>
+</v-alert>
+  
 </template>
 
 <script setup>
@@ -38,6 +38,11 @@ watch(
   () => props.dialogSucesso,
   (newValue) => {
     dialog.value = newValue;
+    if (newValue) {
+      setTimeout(() => {
+        fecharModal();
+      }, 9000); 
+    }
   }
 );
 
@@ -49,3 +54,25 @@ const emitChange = (value) => {
   emit("change", value);
 };
 </script>
+
+<style scoped>
+.custom-alert {
+  position: fixed;
+  top: 5%;
+  right: 5%;
+  width: 90%;
+}
+
+.fade-out {
+  animation: fadeOut 6s ease forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+</style>

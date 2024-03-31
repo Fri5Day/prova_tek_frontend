@@ -1,6 +1,6 @@
 <template>
   <div class="mt-10" style="display: grid; justify-items: center">
-    <v-list max-width="500" width="100%">
+    <v-list max-width="500" width="100%" style="justify-content: center">
       <v-card>
         <v-list-item v-for="livro in livro" :key="livro.id">
           <v-card-title>{{ livro.titulo }}</v-card-title>
@@ -45,7 +45,8 @@
     <!--Componentes-->
     <ModalLivro
       :dialogLivro="dialogAtualizar"
-      @change="dialogAtualizar = $event"
+      :loading="loadingEvent"
+      @change="(dialogAtualizar = $event), (loadingEvent = $event)"
       @salvar="salvar()"
     >
       <v-text-field label="Titulo" v-model="livroSelecionado.titulo" />
@@ -60,10 +61,12 @@
       />
       <v-text-field label="Descrição" v-model="livroSelecionado.descricao" />
       <v-text-field
-        type="number"
         label="Ano Publicação"
         v-model="livroSelecionado.anoPublicacao"
-      />
+        placeholder="YYYY"
+        maxlength="4"
+        @input="validateYear"
+      ></v-text-field>
       <v-text-field
         type="number"
         label="Cópias"
@@ -80,7 +83,7 @@
       :dialogConfirmacao="dialogDeletar"
       @change="dialogDeletar = $event"
       @sim="confirmaDeletarlivro()"
-      :texto="`Tem certeza que deseja excluir a livro ${livroSelecionado.titulo}?`"
+      :texto="`Tem certeza que deseja excluir o livro ${livroSelecionado.titulo}?`"
     />
   </div>
 </template>
@@ -100,16 +103,21 @@ import { api } from "../Services/api.js";
 const dialogAtualizar = ref(false);
 const dialogDeletar = ref(false);
 const livro = ref([]);
+const loadingEvent = ref(false);
 const listarCategoria = ref([]);
-const livroSelecionado = ref({
-  titulo: "",
-  autor: "",
-  categoriaId: "",
-  descricao: "",
-  anoPublicacao: "",
-  copias: "",
-  copiasDisponiveis: "",
-});
+const livroSelecionado = ref({});
+
+//Valida se o ano digitado nao é maior que o atual
+const validateYear = () => {
+  const currentYear = new Date().getFullYear();
+  const inputYear = parseInt(livroSelecionado.value.anoPublicacao);
+  if (inputYear > currentYear) {
+    livroSelecionado.value.anoPublicacao = currentYear.toString();
+  }
+  return {
+    validateYear,
+  };
+};
 
 //funções
 async function adicionarLivro() {
@@ -156,6 +164,7 @@ async function carregarListaCategoria() {
 
 async function salvar() {
   try {
+    loadingEvent.value = true;
     let resposta;
     if (livroSelecionado.value.id) {
       resposta = await api.put(
@@ -166,8 +175,11 @@ async function salvar() {
       resposta = await api.post("livro", livroSelecionado.value);
       livro.value.push(resposta.data);
     }
+    loadingEvent.value = false;
     dialogAtualizar.value = false;
   } catch (error) {
+    loadingEvent.value = false;
+    dialogAtualizar.value = false;
     console.error(error);
   }
 }
